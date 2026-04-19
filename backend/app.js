@@ -14,12 +14,15 @@ const { rateLimiter } = require("./helpers/rate-limiter");
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 app.use(cors());
 app.use(express.json());
 app.use(
   expressSession({
-    secret: process.env.JWT_SECRET,
+    secret: process.env.JWT_SECRET || "development-secret-key",
     resave: true,
     saveUninitialized: true,
   })
@@ -38,7 +41,13 @@ app.use("/todos", todos_route);
 
 // default case for unmatched routes
 app.use(function (req, res) {
-  res.status(404);
+  res.status(404).json({ success: false, msg: "Route not found" });
+});
+
+// Error handling middleware
+app.use(function (err, req, res, next) {
+  console.error("Error:", err);
+  res.status(500).json({ success: false, msg: "Internal server error" });
 });
 
 const port = process.env.SERVER_PORT;

@@ -25,7 +25,8 @@ services:
       - default
       - frontend
     volumes:
-      - ./backend:/home/node/app
+      - ./backend:/backend
+      - /backend/node_modules
     environment:
       - NODE_ENV=development
     env_file:
@@ -35,7 +36,7 @@ services:
     depends_on:
       - mongo
     ports:
-      - "5000:4000"
+      - "4000:4000"
 
   frontend:
     container_name: react-mern-docker-boilerplate
