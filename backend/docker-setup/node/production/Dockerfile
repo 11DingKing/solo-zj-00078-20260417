@@ -1,4 +1,4 @@
-FROM node:16-slim
+FROM node:20-bookworm-slim
 
 ENV USER=node
 
@@ -23,6 +23,9 @@ ENV PATH=/home/node/.npm-global/bin:$PATH
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 
 RUN npm --global config set user "${USER}"
+
+# Use npm mirror for better network connectivity
+RUN npm config set registry https://registry.npmmirror.com
 
 USER node
 

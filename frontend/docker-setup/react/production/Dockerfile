@@ -1,13 +1,16 @@
 #
 # Stage 1: React production build
 #
-FROM node:16-slim as frontend
+FROM node:20-bookworm-slim as frontend
 
 # Create app directory
 WORKDIR /frontend
 
 # Install app dependencies
 COPY package.json yarn.lock ./
+
+# Use yarn mirror for better network connectivity
+RUN yarn config set registry https://registry.npmmirror.com
 
 RUN yarn install
 
@@ -22,7 +25,7 @@ EXPOSE 3000
 #
 # Stage 2: Nginx as a proxy & static file server
 #
-FROM nginx:1.23.0
+FROM nginx:1.27-bookworm
 
 # Set working directory to nginx asset directory
 WORKDIR /usr/share/nginx/html
